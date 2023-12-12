@@ -1,23 +1,21 @@
 import torch
-import torch.optim as optim
-import torch.nn as nn
 import numpy as np
+import torch.nn as nn
+import torch.optim as optim
 import matplotlib.pyplot as plt
 
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 from torch.nn.utils.rnn import pad_sequence
-
-from model import Classifier, GRUNet
 from torch.utils.data import DataLoader, random_split
-from data import data_preprocess, CustomDataset
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
+from model import GRUNet
+from data import Data
 
 
 class Lab3Model(object):
     def __init__(self, batch_size=64, num_workers=10, path='data/yelp.csv'):
-        
-        X, labels = data_preprocess(path)
-        self.dataset = CustomDataset(X=X, y=labels)
+        self.dataset = Data(path)
         valid_size = 1000
         test_size = 1000
         train_size = len(self.dataset) - valid_size - test_size
@@ -48,10 +46,10 @@ class Lab3Model(object):
         self.acc_list = {"train": [], "val": []}
 
     def train(self, lr=0.01, epochs=10, device='cuda', wait=8, lrd=False, hidden_size=128, 
-              num_layers=2, p=0.1, bidirectional=True):
+              num_layers=2, p=0.1, bidirectional=True, fig_name='lab3'):
         self.device = torch.device(device) if torch.cuda.is_available() else torch.device("cpu")
-        print(self.device)
         self.lr = lr
+        self.fig_name = fig_name
         corpus_size, embedding_dim = self.dataset.weights_matrix.shape
         self.net = GRUNet(corpus_size=corpus_size, 
                           embedding_dim=embedding_dim, 
@@ -152,7 +150,7 @@ class Lab3Model(object):
         plt.xlabel("Epoch")
         plt.ylabel("CrossEntropyLoss")
         plt.title("CrossEntropyLoss of Train and Validation in each Epoch")
-        plt.savefig(f"fig/{self.fig_name}_loss.png")
+        plt.savefig(f"{self.fig_name}_loss.png")
 
     def plot_acc(self):
         plt.figure()
@@ -164,7 +162,7 @@ class Lab3Model(object):
         plt.xlabel("Epoch")
         plt.ylabel("Accuracy")
         plt.title("Accuracy of Train and Validation in each Epoch")
-        plt.savefig(f"fig/{self.fig_name}_acc.png")
+        plt.savefig(f"{self.fig_name}_acc.png")
 
     def test(self):
         test_data_loader = DataLoader(dataset=self.test_dataset,
