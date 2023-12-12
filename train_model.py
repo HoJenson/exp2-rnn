@@ -50,6 +50,7 @@ class Lab3Model(object):
     def train(self, lr=0.01, epochs=10, device='cuda', wait=8, lrd=False, hidden_size=128, 
               num_layers=2, p=0.1, bidirectional=True):
         self.device = torch.device(device) if torch.cuda.is_available() else torch.device("cpu")
+        print(self.device)
         self.lr = lr
         corpus_size, embedding_dim = self.dataset.weights_matrix.shape
         self.net = GRUNet(corpus_size=corpus_size, 
