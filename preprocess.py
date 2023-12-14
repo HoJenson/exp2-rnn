@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import word_tokenize
 
+# 从json文件中提取出来保存为评价和评分列保存为.csv，文件所在的路径
 PATH = 'data/yelp.csv'
 
 df = pd.read_csv(PATH)
@@ -36,4 +37,5 @@ for text in list(texts):
 data = pd.DataFrame({
     'X':X,
     'labels':labels})
+# 预处理后文件保存的位置
 data.to_csv('data/yelp_m.csv')

@@ -3,11 +3,11 @@ from train_model import Lab3Model
 # 学习率衰减
 lrd = True
 # GRU模型中隐藏状态的维度
-hidden_size = [64, 128, 256]
+hidden_size = 64
 # GRU模型的层数
-num_layers = [1, 2, 3, 4, 5]
+num_layers = 2
 # dropout概率
-p = 0.0
+p = 0.2
 # 是否使用双向GRU
 bidirectional = True
 
